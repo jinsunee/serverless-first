@@ -2,6 +2,9 @@ import type { AWS } from "@serverless/typescript";
 
 import hello from "@functions/hello";
 
+// DynamoDB
+import dynamoDbTables from "./resources/dynamodb-tables";
+
 const serverlessConfiguration: AWS = {
   service: "serverless-first",
   frameworkVersion: "2",
@@ -82,50 +85,7 @@ const serverlessConfiguration: AWS = {
   // import the function via paths
   functions: { hello },
   resources: {
-    Resources: {
-      ListTable: {
-        Type: "AWS::DynamoDB::Table",
-        DeletionPolicy: "Retain",
-        Properties: {
-          TableName: "${self:provider.environment.LIST_TABLE}",
-          AttributeDefinitions: [
-            {
-              AttributeName: "id",
-              AttributeType: "S",
-            },
-          ],
-          KeySchema: [
-            {
-              AttributeName: "id",
-              KeyType: "HASH",
-            },
-          ],
-          ProvisionedThroughput: {
-            ReadCapacityUnits: "${self:custom.TABLE_THROUGHPUT}",
-            WriteCapacityUnits: "${self:custom.TABLE_THROUGHPUT}",
-          },
-        },
-      },
-      TasksTable: {
-        Type: "AWS::DynamoDB::Table",
-        DeletionPolicy: "Retain",
-        Properties: {
-          TableName: "${self:provider.environment.TASKS_TABLE}",
-          AttributeDefinitions: [
-            { AttributeName: "id", AttributeType: "S" },
-            { AttributeName: "listId", AttributeType: "S" },
-          ],
-          KeySchema: [
-            { AttributeName: "id", KeyType: "HASH" },
-            { AttributeName: "listId", KeyType: "RANGE" },
-          ],
-          ProvisionedThroughput: {
-            ReadCapacityUnits: "${self:custom.TABLE_THROUGHPUT}",
-            WriteCapacityUnits: "${self:custom.TABLE_THROUGHPUT}",
-          },
-        },
-      },
-    },
+    Resources: dynamoDbTables,
   },
 };
 
