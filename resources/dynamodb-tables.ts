@@ -8,7 +8,7 @@ export default {
     Type: "AWS::DynamoDB::Table",
     DeletionPolicy: "Retain",
     Properties: {
-      TableName: "list",
+      TableName: "dev-list-table-dev",
       AttributeDefinitions: [
         {
           AttributeName: "id",
@@ -28,7 +28,7 @@ export default {
     Type: "AWS::DynamoDB::Table",
     DeletionPolicy: "Retain",
     Properties: {
-      TableName: "tasks",
+      TableName: "dev-tasks-table-dev",
       AttributeDefinitions: [
         { AttributeName: "id", AttributeType: "S" },
         { AttributeName: "listId", AttributeType: "S" },

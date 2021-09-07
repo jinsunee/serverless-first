@@ -1,7 +1,6 @@
 import {
   APIGatewayProxyHandler,
   APIGatewayEvent,
-  Context,
   APIGatewayProxyResult,
 } from "aws-lambda";
 import "source-map-support/register";
@@ -19,8 +18,7 @@ import { validateAgainstConstraints } from "../../utils/util";
 import requestConstraints from "../../constraints/list/update.constraint.json";
 
 export const updateList: APIGatewayProxyHandler = (
-  event: APIGatewayEvent,
-  _context: Context
+  event: APIGatewayEvent
 ): Promise<APIGatewayProxyResult> => {
   let response;
 
@@ -32,7 +30,7 @@ export const updateList: APIGatewayProxyHandler = (
 
   return Promise.all([
     validateAgainstConstraints(requestData, requestConstraints),
-    databaseService.get({ Key: listId, TableName: LIST_TABLE }),
+    databaseService.getItem({ key: listId, tableName: LIST_TABLE }),
   ])
     .then(() => {
       const params = {

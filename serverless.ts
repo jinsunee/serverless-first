@@ -1,11 +1,10 @@
 import type { AWS } from "@serverless/typescript";
 
-import hello from "@functions/hello";
-
-// DynamoDB
 import dynamoDbTables from "./resources/dynamodb-tables";
 
-const { REGION, STAGE } = process.env;
+import functions from "./resources/functions";
+
+const { REGION, STAGE, LIST_TABLE, TASKS_TABLE } = process.env;
 const service = "serverless-first";
 const table_throughputs = {
   prod: 5,
@@ -18,8 +17,8 @@ const serverlessConfiguration: AWS = {
   custom: {
     region: REGION,
     stage: STAGE,
-    list_table: "list",
-    tasks_table: "tasks",
+    list_table: LIST_TABLE,
+    tasks_table: TASKS_TABLE,
     table_throughputs,
     dynamodb: {
       stages: ["dev"],
@@ -36,6 +35,7 @@ const serverlessConfiguration: AWS = {
     },
     ["serverless-offline"]: {
       httpPort: 3000,
+      endPoint: "http://localhost:3000",
       babelOptions: {
         presets: ["env"],
       },
@@ -61,8 +61,9 @@ const serverlessConfiguration: AWS = {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       REGION: REGION,
       STAGE: STAGE,
-      LIST_TABLE: "list",
-      TASKS_TABLE: "tasks",
+      LIST_TABLE: LIST_TABLE,
+      TASKS_TABLE: TASKS_TABLE,
+      INVOKE_ENDPOINT: "http://localhost:4001",
     },
     lambdaHashingVersion: "20201221",
     iamRoleStatements: [
@@ -84,11 +85,11 @@ const serverlessConfiguration: AWS = {
       },
     ],
   },
-  // import the function via paths
-  functions: { hello },
+  functions,
   resources: {
     Resources: dynamoDbTables,
   },
+  useDotenv: true,
 };
 
 module.exports = serverlessConfiguration;

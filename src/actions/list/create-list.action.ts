@@ -1,7 +1,6 @@
 import {
   APIGatewayProxyHandler,
   APIGatewayEvent,
-  Context,
   APIGatewayProxyResult,
 } from "aws-lambda";
 import "source-map-support/register";
@@ -20,8 +19,7 @@ import { validateAgainstConstraints } from "../../utils/util";
 import requestConstraints from "../../constraints/list/create.constraint.json";
 
 export const createList: APIGatewayProxyHandler = (
-  event: APIGatewayEvent,
-  _context: Context
+  event: APIGatewayEvent
 ): Promise<APIGatewayProxyResult> => {
   // Initialize response variable
   let response;
@@ -36,6 +34,8 @@ export const createList: APIGatewayProxyHandler = (
 
       const listModel = new ListModel(requestData);
       const data = listModel.getEntityMappings();
+
+      console.log(process.env.LIST_TABLE);
 
       const params = {
         TableName: process.env.LIST_TABLE,

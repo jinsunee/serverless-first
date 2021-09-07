@@ -13,12 +13,14 @@ type IGeneric<T> = {
  */
 export const validateAgainstConstraints = (
   values: IGeneric<string>,
-  constraints: IGeneric<object>
+  constraints: IGeneric<Record<string, unknown>>
 ) => {
   return new Promise<void>((resolve, reject) => {
     const validation = validate(values, constraints);
 
-    if (typeof validation == null) {
+    console.log(validation);
+
+    if (typeof validation === "undefined") {
       resolve();
     } else {
       reject(
@@ -27,3 +29,12 @@ export const validateAgainstConstraints = (
     }
   });
 };
+
+export function createChunks<T>(data: T[], chunkSize: number) {
+  const urlChunks = [];
+  let batchIterator = 0;
+  while (batchIterator < data.length) {
+    urlChunks.push(data.slice(batchIterator, (batchIterator += chunkSize)));
+  }
+  return urlChunks;
+}

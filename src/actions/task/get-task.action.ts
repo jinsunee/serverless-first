@@ -22,56 +22,64 @@ import { StatusCode } from "../../enums/status-code.enum";
 import { ResponseMessage } from "../../enums/response-message.enum";
 
 /***
-* Delete task
-*
-* @api {post} /task/delete
-* @apiName Delete task
-* @apiGroup To-Do List
-* @apiDescription Delete task
-*
-* @apiParam {string}         taskId         The id of the task
-*
-* @apiSuccess {object} data
-* @apiSuccess {string} message       The response message
-* @apiSuccess {string} status        The response status
-*
-* @apiParamExample {json} Request-Example:
-*     {
-*      "listId": "468c8094-a756-4000-a919-974a64b5be8e",
-*      "taskId": "c1219773-19b5-4228-ba7c-06309a0b00ee",
-*    }
-*
-* @apiSuccessExample {json} Success-Response:
-*     HTTP/1.1 200 OK
-*     {
-*       "data": {},
-*       "message": "Task successfully deleted"
-*       "status": "success"
-*     }
-*      *
-*  @apiErrorExample {json} Error-Response: Validation Errors
-*     HTTP/1.1 400 Bad Request
-*    {
-*      "data": {
-*          "validation": {
-              "taskId": [
-                  "Task Id can't be blank"
-              ]
-          }
-*      },
-*      "message": "required fields are missing",
-*      "status": "bad request"
-*    }
-*
-*  @apiErrorExample {json} Error-Response: Unknown Error
-*     HTTP/1.1 500 Internal Server Error
-*    {
-*      "data": {},
-*      "message": "Unknown error",
-*      "status": "error"
-*    }
-*/
-export const deleteTask: APIGatewayProxyHandler = async (
+ * Get task
+ *
+ * @api {post} /task
+ * @apiName Get task
+ * @apiGroup To-Do List
+ * @apiDescription Get task
+ *
+ * @apiParam {string}         listId         The id of the list
+ * @apiParam {string}         taskId         The id of the task
+ *
+ * @apiSuccess {object} data
+ * @apiSuccess {string} message       The response message
+ * @apiSuccess {string} status        The response status
+ *
+ * @apiParamExample {json} Request-Example:
+ *     {
+ *       "listId": "e784e0cb-ce5f-4ce5-8b9f-8fb243d332cf",
+ *       "taskId": "468c8094-a756-4000-a919-974a64b5be8e",
+ *    }
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "data": {
+ *           listId: '3e790b70-d27c-49db-9fc4-b07d7e636c2e',
+ *           description: 'Buy some milk',
+ *           createdAt: 1609773184678,
+ *           id: 'f17cfcee-a636-4a94-a6d4-818c86a6a450',
+ *           completed: false,
+ *           updatedAt: 1609773184678
+ *       },
+ *       "message": "Task successfully retrieved"
+ *       "status": "success"
+ *     }
+ *      *
+ *  @apiErrorExample {json} Error-Response: Validation Errors
+ *     HTTP/1.1 400 Bad Request
+ *    {
+ *      "data": {
+ *          "validation": {
+                "taskId": [
+                    "Task Id can't be blank"
+                ]
+            }
+ *      },
+ *      "message": "required fields are missing",
+ *      "status": "bad request"
+ *    }
+ *
+ *  @apiErrorExample {json} Error-Response: Unknown Error
+ *     HTTP/1.1 500 Internal Server Error
+ *    {
+ *      "data": {},
+ *      "message": "Unknown error",
+ *      "status": "error"
+ *    }
+ */
+export const getTask: APIGatewayProxyHandler = async (
   event: APIGatewayEvent
 ): Promise<APIGatewayProxyResult> => {
   // Initialize response variable
@@ -101,24 +109,12 @@ export const deleteTask: APIGatewayProxyHandler = async (
         tableName: TASKS_TABLE,
       });
     })
-    .then(() => {
-      // Initialise DynamoDB DELETE parameters
-      const params = {
-        TableName: TASKS_TABLE,
-        Key: {
-          id: taskId,
-          listId: listId,
-        },
-      };
-      // Delete task from db
-      return databaseService.delete(params);
-    })
-    .then(() => {
+    .then((data) => {
       // Set Success Response
       response = new ResponseModel(
-        {},
+        { ...data.Item },
         StatusCode.OK,
-        ResponseMessage.DELETE_TASK_SUCCESS
+        ResponseMessage.GET_TASK_SUCCESS
       );
     })
     .catch((error) => {
@@ -129,7 +125,7 @@ export const deleteTask: APIGatewayProxyHandler = async (
           : new ResponseModel(
               {},
               StatusCode.ERROR,
-              ResponseMessage.DELETE_TASK_FAIL
+              ResponseMessage.GET_TASK_FAIL
             );
     })
     .then(() => {
