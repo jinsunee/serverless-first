@@ -1,5 +1,8 @@
 // API Responses
 
+import { STATUS_CODES } from "http";
+import { Status } from "src/enums/status.enum";
+
 // Interfaces
 type ResponseHeader = { [header: string]: string | number | boolean };
 interface IResponseBody {
@@ -14,17 +17,10 @@ interface IResponse {
   body: string;
 }
 
-// Enums
-enum Status {
-  SUCCESS = "success",
-  ERROR = "error",
-  BAD_REQUEST = "bad request",
-}
-
 const STATUS_MESSAGES = {
-  200: Status.SUCCESS,
-  400: Status.BAD_REQUEST,
-  500: Status.ERROR,
+  [STATUS_CODES.OK]: Status.SUCCESS,
+  [STATUS_CODES.BAD_REQUEST]: Status.BAD_REQUEST,
+  [STATUS_CODES.ERROR]: Status.ERROR,
 };
 
 const RESPONSE_HEADERS: ResponseHeader = {

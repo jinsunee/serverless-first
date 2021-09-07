@@ -14,7 +14,8 @@
     "@middy/http-json-body-parser": "^1.5.2",
     "@types/uuid": "^8.3.1",
     "aws-sdk": "^2.983.0",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "validate.js": "^0.13.1"
   },
   "devDependencies": {
     "@serverless/typescript": "^2.23.0",
@@ -24,6 +25,7 @@
     "serverless": "^2.23.0",
     "serverless-bundle": "^5.0.0",
     "serverless-dotenv-plugin": "^3.9.0",
+    "serverless-dynamodb-local": "^0.2.40",
     "serverless-offline": "^8.0.0",
     "tsconfig-paths": "^3.9.0",
     "tsconfig-paths-webpack-plugin": "^3.3.0"

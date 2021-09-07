@@ -1,9 +1,14 @@
+const ProvisionedThroughput = {
+  ReadCapacityUnits: 1,
+  WriteCapacityUnits: 1,
+};
+
 export default {
   ListTable: {
     Type: "AWS::DynamoDB::Table",
     DeletionPolicy: "Retain",
     Properties: {
-      TableName: "${self:provider.environment.LIST_TABLE}",
+      TableName: "list",
       AttributeDefinitions: [
         {
           AttributeName: "id",
@@ -16,17 +21,14 @@ export default {
           KeyType: "HASH",
         },
       ],
-      ProvisionedThroughput: {
-        ReadCapacityUnits: "${self:custom.TABLE_THROUGHPUT}",
-        WriteCapacityUnits: "${self:custom.TABLE_THROUGHPUT}",
-      },
+      ProvisionedThroughput,
     },
   },
   TasksTable: {
     Type: "AWS::DynamoDB::Table",
     DeletionPolicy: "Retain",
     Properties: {
-      TableName: "${self:provider.environment.TASKS_TABLE}",
+      TableName: "tasks",
       AttributeDefinitions: [
         { AttributeName: "id", AttributeType: "S" },
         { AttributeName: "listId", AttributeType: "S" },
@@ -35,10 +37,7 @@ export default {
         { AttributeName: "id", KeyType: "HASH" },
         { AttributeName: "listId", KeyType: "RANGE" },
       ],
-      ProvisionedThroughput: {
-        ReadCapacityUnits: "${self:custom.TABLE_THROUGHPUT}",
-        WriteCapacityUnits: "${self:custom.TABLE_THROUGHPUT}",
-      },
+      ProvisionedThroughput,
       GlobalSecondaryIndexes: [
         {
           IndexName: "list_index",
@@ -47,12 +46,9 @@ export default {
             // attributes to project into the index
             ProjectionType: "ALL",
           },
-          ProvisionedThroughput: {
-            ReadCapacityUnits: "${self:custom.table_throughput}",
-            WriteCapacityUnits: "${self:custom.table_throughput}",
-          },
+          ProvisionedThroughput,
         },
       ],
     },
   },
-},
+};

@@ -5,21 +5,22 @@ import hello from "@functions/hello";
 // DynamoDB
 import dynamoDbTables from "./resources/dynamodb-tables";
 
+const { REGION, STAGE } = process.env;
+const service = "serverless-first";
+const table_throughputs = {
+  prod: 5,
+  default: 1,
+};
+
 const serverlessConfiguration: AWS = {
-  service: "serverless-first",
+  service,
   frameworkVersion: "2",
   custom: {
-    region: "${opt:region, self:provider.region}",
-    stage: "${opt:stage, self: provider.stage}",
-    list_table: "${self:service}-list-table-${opt:stage, self:provider.stage}",
-    tasks_table:
-      "${self:service}-tasks-table-${opt:stage, self:provider.stage}",
-    table_throughputs: {
-      prod: 5,
-      default: 1,
-    },
-    table_throughput:
-      "${self:custom.TABLE_THROUGHPUTS.${self:custom.stage}, self:custom.table_throughputs.default}",
+    region: REGION,
+    stage: STAGE,
+    list_table: "list",
+    tasks_table: "tasks",
+    table_throughputs,
     dynamodb: {
       stages: ["dev"],
       start: {
@@ -43,6 +44,7 @@ const serverlessConfiguration: AWS = {
   plugins: [
     "serverless-bundle",
     "serverless-offline",
+    "serverless-dynamodb-local",
     "serverless-dotenv-plugin",
   ],
   package: {
@@ -57,10 +59,10 @@ const serverlessConfiguration: AWS = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
-      REGION: "${self:custom.region}",
-      STAGE: "${self:custom.stage}",
-      LIST_TABLE: "${self:custom.list_table}",
-      TASKS_TABLE: "${self:custom.tasks_table}",
+      REGION: REGION,
+      STAGE: STAGE,
+      LIST_TABLE: "list",
+      TASKS_TABLE: "tasks",
     },
     lambdaHashingVersion: "20201221",
     iamRoleStatements: [
